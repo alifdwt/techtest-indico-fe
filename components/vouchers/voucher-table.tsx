@@ -11,8 +11,6 @@ import {
   Pencil,
 } from "lucide-react";
 
-import type { Voucher } from "@/lib/validators/voucher";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +21,14 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Voucher } from "@/lib/validators/voucher";
 import { VoucherSortBy, VoucherSortOrder } from "@/lib/api/voucher";
 import ExportVoucherButton from "./export-voucher-button";
 import DeleteVoucherButton from "./delete-voucher-button";
@@ -101,6 +107,13 @@ export function VoucherTable({
     handleUpdateQuery({ page: String(nextPage) });
   };
 
+  const handleLimitChange = (value: string) => {
+    handleUpdateQuery({
+      limit: value,
+      page: "1", // reset ke page 1 kalau page size berubah
+    });
+  };
+
   const formatDateTime = (value: string) => {
     const date = new Date(value);
     return new Intl.DateTimeFormat("en-US", {
@@ -118,6 +131,8 @@ export function VoucherTable({
 
   const from = total === 0 ? 0 : (page - 1) * limit + 1;
   const to = Math.min(total, page * limit);
+
+  const limitOptions = [5, 10, 25, 50];
 
   return (
     <div className="space-y-4">
@@ -214,13 +229,30 @@ export function VoucherTable({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-muted-foreground">
-          Showing <span className="font-medium">{from}</span>–
-          <span className="font-medium">{to}</span> of{" "}
-          <span className="font-medium">{total}</span> vouchers
-        </p>
+      {/* Pagination + page size */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+          <p>
+            Showing <span className="font-medium">{from}</span>–
+            <span className="font-medium">{to}</span> of{" "}
+            <span className="font-medium">{total}</span> vouchers
+          </p>
+          <div className="flex items-center gap-2">
+            <span>Rows per page:</span>
+            <Select value={String(limit)} onValueChange={handleLimitChange}>
+              <SelectTrigger className="h-7 w-[90px] px-2 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {limitOptions.map((opt) => (
+                  <SelectItem key={opt} value={String(opt)}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         <div className="flex items-center gap-2">
           <Button
