@@ -7,7 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function LoginPage() {
+interface SearchParams {
+  searchParams: Promise<{
+    from?: string;
+  }>;
+}
+
+export default async function LoginPage({ searchParams }: SearchParams) {
+  const { from } = await searchParams;
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-md shadow-lg">
@@ -18,7 +25,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LoginForm />
+          <LoginForm from={from} />
         </CardContent>
       </Card>
     </div>

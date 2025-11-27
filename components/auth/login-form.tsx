@@ -2,7 +2,7 @@
 
 import { loginAction } from "@/actions/login";
 import { LoginInput, loginSchema } from "@/lib/validators/auth";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,9 +16,8 @@ const initialState = {
   message: undefined as string | undefined,
 };
 
-const LoginForm = () => {
+const LoginForm = ({ from }: { from?: string }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(loginAction, initialState);
@@ -45,7 +44,7 @@ const LoginForm = () => {
 
     if (state.success) {
       toast.success(state.message);
-      const redirectTo = searchParams.get("from") || "/vouchers";
+      const redirectTo = from || "/vouchers";
       router.push(redirectTo);
     } else {
       toast.error(state.message);
@@ -60,7 +59,7 @@ const LoginForm = () => {
     }, 0);
 
     return () => clearTimeout(t);
-  }, [state, router, searchParams, setError]);
+  }, [state, router, from, setError]);
 
   const onSubmit = (data: LoginInput) => {
     startTransition(() => {
