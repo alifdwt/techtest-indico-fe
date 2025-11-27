@@ -143,7 +143,7 @@ export function VoucherTable({
             <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search by voucher code..."
-              className="pl-8"
+              className="pl-8 bg-background"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -240,7 +240,7 @@ export function VoucherTable({
           <div className="flex items-center gap-2">
             <span>Rows per page:</span>
             <Select value={String(limit)} onValueChange={handleLimitChange}>
-              <SelectTrigger className="h-7 w-[90px] px-2 text-xs">
+              <SelectTrigger className="h-7 w-[90px] px-2 text-xs bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

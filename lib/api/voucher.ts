@@ -1,6 +1,14 @@
 import "server-only";
-import { VoucherList, voucherListResponseSchema } from "../validators/voucher";
+import {
+  Voucher,
+  VoucherFormInput,
+  voucherFormSchema,
+  VoucherList,
+  voucherListResponseSchema,
+  voucherSchema,
+} from "../validators/voucher";
 import { cookies } from "next/headers";
+import z from "zod";
 
 export type VoucherSortBy = "expiry_date" | "discount_percent";
 export type VoucherSortOrder = "asc" | "desc";
@@ -68,4 +76,158 @@ export async function getVouchers(
   }
 
   return parsed.data.data;
+}
+
+const voucherDetailResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: voucherSchema,
+});
+
+export async function getVoucherById(id: string): Promise<Voucher> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+
+  if (!token) {
+    throw new Error("Unauthorized");
+  }
+
+  const res = await fetch(`${process.env.API_BASE_URL}/vouchers/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
+
+  const json = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const message =
+      (json && typeof json.message === "string" && json.message) ||
+      "Failed to fetch voucher details";
+    throw new Error(message);
+  }
+
+  const parsed = voucherDetailResponseSchema.safeParse(json);
+
+  if (!parsed.success) {
+    console.error("Voucher detail response validation failed:", parsed.error);
+    throw new Error("Invalid response from server.");
+  }
+
+  return parsed.data.data;
+}
+
+type ActionResult = {
+  success: boolean;
+  message: string;
+};
+
+export async function createVoucher(
+  input: VoucherFormInput
+): Promise<ActionResult> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+
+  if (!token) {
+    return {
+      success: false,
+      message: "You are not authorized.",
+    };
+  }
+
+  const parsed = voucherFormSchema.safeParse(input);
+  if (!parsed.success) {
+    const firstError =
+      Object.values(parsed.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean)[0] ?? "Invalid data";
+
+    return {
+      success: false,
+      message: firstError,
+    };
+  }
+
+  const body = parsed.data;
+
+  const res = await fetch(`${process.env.API_BASE_URL}/vouchers`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const json = await res.json().catch(() => null);
+
+  if (!res.ok || json?.success === false) {
+    return {
+      success: false,
+      message: json?.message ?? "Failed to create voucher. Please try again.",
+    };
+  }
+
+  return {
+    success: true,
+    message: "Voucher created successfully.",
+  };
+}
+
+export async function updateVoucher(
+  id: string,
+  input: VoucherFormInput
+): Promise<ActionResult> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+
+  if (!token) {
+    return {
+      success: false,
+      message: "You are not authorized.",
+    };
+  }
+
+  const parsed = voucherFormSchema.safeParse(input);
+  if (!parsed.success) {
+    const firstError =
+      Object.values(parsed.error.flatten().fieldErrors)
+        .flat()
+        .filter(Boolean)[0] ?? "Invalid data";
+
+    return {
+      success: false,
+      message: firstError,
+    };
+  }
+
+  const body = parsed.data;
+
+  const res = await fetch(`${process.env.API_BASE_URL}/vouchers/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const json = await res.json().catch(() => null);
+
+  if (!res.ok || json?.success === false) {
+    return {
+      success: false,
+      message: json?.message ?? "Failed to update voucher. Please try again.",
+    };
+  }
+
+  return {
+    success: true,
+    message: "Voucher updated successfully.",
+  };
 }

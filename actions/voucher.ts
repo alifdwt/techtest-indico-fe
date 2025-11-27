@@ -1,8 +1,10 @@
 "use server";
 
+import { createVoucher, updateVoucher } from "@/lib/api/voucher";
+import { VoucherFormInput } from "@/lib/validators/voucher";
 import { cookies } from "next/headers";
 
-type ActionResult = {
+export type ActionResult = {
   success: boolean;
   message: string;
 };
@@ -39,4 +41,17 @@ export async function deleteVoucherAction(id: string): Promise<ActionResult> {
     success: true,
     message: "Voucher deleted successfully.",
   };
+}
+
+export async function createVoucherAction(
+  input: VoucherFormInput
+): Promise<ActionResult> {
+  return await createVoucher(input);
+}
+
+export async function updateVoucherAction(
+  id: string,
+  input: VoucherFormInput
+): Promise<ActionResult> {
+  return await updateVoucher(id, input);
 }
