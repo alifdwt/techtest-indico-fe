@@ -5,10 +5,11 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "2055:3000"
+      - "3000:3000"
     networks:
       - techtest-network
 
 networks:
   techtest-network:
     external: true
+    name: techtest-indico_techtest-network
