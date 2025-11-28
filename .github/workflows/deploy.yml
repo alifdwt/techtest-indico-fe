@@ -19,7 +19,7 @@ jobs:
           script: |
             set -e
 
-            PROJECT_DIR=/opt/techtest-indico-fe
+            PROJECT_DIR="$HOME/technical-test/indico/techtest-indico-fe"
             REPO_URL=https://github.com/alifdwt/techtest-indico-fe.git
 
             if [ ! -d "$PROJECT_DIR/.git" ]; then
