@@ -6,9 +6,6 @@ The app is built using **Next.js 16 (App Router)**, **TypeScript**, **Tailwind C
 🌐 **Live Demo:**  
 https://techtest-indico.alifdwt.com
 
-🎥 **Video Walkthrough (Loom):**  
-https://www.loom.com/share/437a5ced45a743e99dc9e563c88335b9
-
 ---
 
 ## 📌 Features
@@ -48,13 +45,6 @@ https://www.loom.com/share/437a5ced45a743e99dc9e563c88335b9
 - Export all vouchers to CSV
 - Format:  
   `voucher_code, discount_percent, expiry_date`
-
-### 5. UI/UX Enhancements
-
-- Loading indicators on fetch/submit
-- Toast notifications with **sonner**
-- Topbar & sidebar layout
-- Clean, responsive UI with Tailwind + shadcn/ui
 
 ---
 
@@ -285,13 +275,6 @@ Production setup:
 ```
 http://backend:8080
 ```
-
----
-
-## 📺 Demo Video
-
-Watch full demo here:
-👉 [https://www.loom.com/share/437a5ced45a743e99dc9e563c88335b9](https://www.loom.com/share/437a5ced45a743e99dc9e563c88335b9)
 
 ---
 
