@@ -10,7 +10,11 @@ import {
 import { cookies } from "next/headers";
 import z from "zod";
 
-export type VoucherSortBy = "expiry_date" | "discount_percent";
+export type VoucherSortBy =
+  | "expiry_date"
+  | "discount_percent"
+  | "created_at"
+  | "updated_at";
 export type VoucherSortOrder = "asc" | "desc";
 
 export type GetVouchersParams = {
