@@ -34,8 +34,18 @@ export default async function VoucherPage({
     ? 10
     : Math.max(1, Number(limitParam || 10));
 
-  const sortBy: VoucherSortBy =
-    sortByParam === "discount_percent" ? "discount_percent" : "expiry_date";
+  const allowedSortBy: VoucherSortBy[] = [
+    "expiry_date",
+    "discount_percent",
+    "created_at",
+    "updated_at",
+  ];
+
+  const sortBy: VoucherSortBy = allowedSortBy.includes(
+    sortByParam as VoucherSortBy
+  )
+    ? (sortByParam as VoucherSortBy)
+    : "expiry_date";
   const sortOrder: VoucherSortOrder =
     sortOrderParam === "desc" ? "desc" : "asc";
 

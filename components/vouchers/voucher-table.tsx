@@ -7,8 +7,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  ArrowUpDown,
   Pencil,
+  ArrowUpDownIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -134,6 +134,19 @@ export function VoucherTable({
 
   const limitOptions = [5, 10, 25, 50];
 
+  const renderSortIcon = (field: VoucherSortBy) => {
+    const isActive = sortBy === field;
+    if (!isActive) return <ArrowUpDownIcon className="size-3" />;
+
+    return (
+      <ArrowUpDownIcon
+        className={`size-3 ${
+          sortOrder === "asc" ? "rotate-180 transition-transform" : ""
+        }`}
+      />
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* Top row: search + export */}
@@ -165,7 +178,7 @@ export function VoucherTable({
               >
                 <div className="flex items-center gap-1">
                   Discount (%)
-                  <ArrowUpDown className="h-3 w-3" />
+                  {renderSortIcon("discount_percent")}
                 </div>
               </TableHead>
               <TableHead
@@ -174,11 +187,28 @@ export function VoucherTable({
               >
                 <div className="flex items-center gap-1">
                   Expiry date
-                  <ArrowUpDown className="h-3 w-3" />
+                  {renderSortIcon("expiry_date")}
                 </div>
               </TableHead>
-              <TableHead>Created at</TableHead>
-              <TableHead>Updated at</TableHead>
+              {/* <TableHead>Created at</TableHead> */}
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort("created_at")}
+              >
+                <div className="flex items-center gap-1">
+                  Created at
+                  {renderSortIcon("created_at")}
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort("updated_at")}
+              >
+                <div className="flex items-center gap-1">
+                  Updated at
+                  {renderSortIcon("updated_at")}
+                </div>
+              </TableHead>
               <TableHead className="w-[120px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
