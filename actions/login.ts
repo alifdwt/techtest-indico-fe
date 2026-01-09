@@ -34,7 +34,7 @@ export async function loginAction(
   const { email, password } = parsed.data;
 
   try {
-    const res = await fetch(`${process.env.API_BASE_URL}/login`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

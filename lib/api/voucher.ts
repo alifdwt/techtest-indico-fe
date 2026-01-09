@@ -43,7 +43,7 @@ export async function getVouchers(
     throw new Error("Unauthorized");
   }
 
-  const url = new URL(`${process.env.API_BASE_URL}/vouchers`);
+  const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers`);
 
   url.searchParams.set("page", String(page));
   url.searchParams.set("limit", String(limit));
@@ -96,14 +96,17 @@ export async function getVoucherById(id: string): Promise<Voucher> {
     throw new Error("Unauthorized");
   }
 
-  const res = await fetch(`${process.env.API_BASE_URL}/vouchers/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers/${id}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    }
+  );
 
   const json = await res.json().catch(() => null);
 
@@ -157,7 +160,7 @@ export async function createVoucher(
 
   const body = parsed.data;
 
-  const res = await fetch(`${process.env.API_BASE_URL}/vouchers`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -211,15 +214,18 @@ export async function updateVoucher(
 
   const body = parsed.data;
 
-  const res = await fetch(`${process.env.API_BASE_URL}/vouchers/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
 
   const json = await res.json().catch(() => null);
 

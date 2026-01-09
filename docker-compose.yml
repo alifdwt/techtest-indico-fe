@@ -1,15 +1,8 @@
 services:
   frontend:
     build: .
-    container_name: techtest-indico-fe
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env.production
     ports:
       - "2055:3000"
-    networks:
-      - techtest-network
-
-networks:
-  techtest-network:
-    external: true
-    name: techtest-indico_techtest-network

@@ -20,13 +20,16 @@ export async function deleteVoucherAction(id: string): Promise<ActionResult> {
     };
   }
 
-  const res = await fetch(`${process.env.API_BASE_URL}/vouchers/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   const json = await res.json().catch(() => null);
 

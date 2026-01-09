@@ -9,12 +9,15 @@ export async function GET() {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const res = await fetch(`${process.env.API_BASE_URL}/vouchers/export`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers/export`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!res.ok) {
     const text = await res.text().catch(() => "Failed to export vouchers.");

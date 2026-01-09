@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy Frontend (Home Server)
 
 on:
   push:
@@ -6,32 +6,52 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, homelab]
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          script: |
-            set -e
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-            PROJECT_DIR="$HOME/technical-test/indico/techtest-indico-fe"
-            REPO_URL=https://github.com/alifdwt/techtest-indico-fe.git
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
 
-            if [ ! -d "$PROJECT_DIR/.git" ]; then
-              echo "Project directory not found. Cloning repository..."
-              mkdir -p "$PROJECT_DIR"
-              cd "$PROJECT_DIR"
-              git clone "$REPO_URL" .
-            else
-              echo "Project directory exists. Pulling latest changes..."
-              cd "$PROJECT_DIR"
-              git pull
-            fi
+      - name: Deploy frontend locally
+        run: |
+          set -e
 
-            echo "Running docker compose..."
-            docker compose up -d --build
+          PROJECT_DIR="/home/alifdwt/projects/techtest-indico/techtest-indico-fe"
+
+          mkdir -p $PROJECT_DIR
+          cd $PROJECT_DIR
+
+          if [ ! -d ".git" ]; then
+            git clone https://github.com/alifdwt/techtest-indico-fe.git .
+          else
+            git pull origin main
+          fi
+
+          echo "⬇️ Pull latest image"
+          docker pull ghcr.io/${{ github.repository }}:latest
+
+          echo "🚀 Start frontend"
+          docker compose up -d --remove-orphans
+
+          echo "🧹 Cleanup"
+          docker image prune -f
+
+          docker compose ps

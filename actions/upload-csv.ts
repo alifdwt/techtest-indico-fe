@@ -37,13 +37,16 @@ export async function uploadCsvAction(
   outgoing.append("file", file, file.name ?? "vouchers.csv");
 
   try {
-    const res = await fetch(`${process.env.API_BASE_URL}/vouchers/upload-csv`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: outgoing,
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/vouchers/upload-csv`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: outgoing,
+      }
+    );
 
     const json = await res.json().catch(() => null);
 
